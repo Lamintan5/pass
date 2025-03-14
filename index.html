@@ -3,30 +3,604 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
     <link rel="stylesheet" href="style/style.css">
-    <title>Document</title>
+    <style>
+        body {
+            color: #fff;
+            display: flex;
+            height: 100vh;
+        }
+
+        .user-container {
+            width: 100%;
+        }
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #444;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #333;
+        }
+
+        tr:nth-child(even) {
+            background-color: #2e2e2e;
+        }
+
+        tr:hover {
+            background-color: #444;
+        }
+        
+    </style>
 </head>
 <body>
-    <main>
-        <div class="login-page">
-            <div class="form">
-              <form class="register-form">
-                <input type="text" placeholder="name"/>
-                <input type="password" placeholder="password"/>
-                <input type="text" placeholder="email address"/>
-                <button>create</button>
-                <p class="message">Already registered? <a href="#">Sign In</a></p>
-              </form>
-              <form class="login-form">
-                <input type="text" placeholder="username"/>
-                <input type="password" placeholder="password"/>
-                <button>login</button>
-                <p class="message">Not registered? <a href="#">Create an account</a></p>
-              </form>
-            </div>
-          </div> 
-    </main>
-    <script src="js/main.js"></script>
-    
+    <div id="user-container" class="user-container">
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const userContainer = document.getElementById('user-container');
+
+            if (user) {
+                userContainer.innerHTML = `
+                    <div class="dashboard-container">
+                        <aside class="sidebar">
+                            <div class="logo">
+                                <img src="images/Padlock.png" alt="PassGen Logo">
+                                <h2>PassGen</h2>
+                            </div>
+                            <div style="flex-grow: 1"></div>
+                            <nav class="menu">
+                                <button id="account-btn"><img src="images/Account.png" alt="Account Icon" class="menu-icon">Account</button>
+                                <button id="passwords-btn"> <img src="images/lock.png" alt="Lock Icon" class="menu-icon">Passwords</button>
+                            </nav>
+                            <div style="flex-grow: 4"></div>
+                            <div class="logout">
+                                <button id="logout-btn">Log Out</button>
+                                <p>©All rights reserved by <b>Bylor Bidan</b></p>
+                            </div>
+                        </aside>
+
+                        <main class="content">
+                            <header class="top-bar">
+                                <div class="user-info">
+                                    <div class="avatar">${user.username[0]}</div>
+                                    <div>
+                                        <h3>${user.username}</h3>
+                                        <p>${user.email}</p>
+                                    </div>
+                                </div>
+                            </header>
+                            <div id="content-area" class="content-area">
+                                <h1>Welcome to PassGen</h1>
+                                <p>Select an option to view details.</p>
+                            </div>
+                        </main>
+                    </div>
+                `;
+
+                document.getElementById('logout-btn').addEventListener('click', function () {
+                    localStorage.removeItem('user');
+                    window.location.href = 'auth.html';
+                });
+
+                document.getElementById('account-btn').addEventListener('click', function () {
+                    const contentArea = document.getElementById('content-area');
+                    contentArea.innerHTML = `
+                        <h1>Account Settings</h1>
+                        <p>Manage your account details here.</p>
+                        <form id="account-form" class="account-form">
+                            <input type="text" id="username" name="username" placeholder="Enter your username" value="${user.username}">
+                            <input type="email" id="email" name="email" placeholder="Enter your email" value="${user.email}">
+                            <input type="password" id="current-password" name="current-password" placeholder="Enter your current password">
+                            <input type="password" id="new-password" name="new-password" placeholder="Enter your new password">
+                            <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm your new password">
+                            <button type="submit">Update</button>
+                        </form>
+                    `;
+
+                    document.getElementById('account-form').addEventListener('submit', function (event) {
+                        event.preventDefault();
+
+                        const updatedUsername = document.getElementById('username').value;
+                        const updatedEmail = document.getElementById('email').value;
+                        const currentPassword = document.getElementById('current-password').value;
+                        const newPassword = document.getElementById('new-password').value;
+                        const confirmPassword = document.getElementById('confirm-password').value;
+
+                        if (newPassword && newPassword !== confirmPassword) {
+                            alert('New password and confirm password do not match.');
+                            return;
+                        }
+
+                        const updateData = {
+                            id: user.id,
+                            username: updatedUsername,
+                            email: updatedEmail,
+                            currentPassword: currentPassword,
+                            newPassword: newPassword
+                        };
+
+                        fetch('http://localhost:5000/update-account', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(updateData)
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                alert(data.message);
+                                if (data.success) {
+                                    user.username = updatedUsername;
+                                    user.email = updatedEmail;
+                                    localStorage.setItem('user', JSON.stringify(user));
+                                }
+                            })
+                            .catch(error => console.error('Error updating account:', error));
+                    });
+                });
+
+                document.getElementById('passwords-btn').addEventListener('click', function () {
+                    const contentArea = document.getElementById('content-area');
+                    contentArea.innerHTML = `
+                        <div class="passwords">
+                            <div class="row">
+                                <div class="column">
+                                    <h1>Password</h1>
+                                    <p>Manage your passwords details here.</p>
+                                </div>
+                                <button class="btn-add" id="add-password-btn">Add</button>
+                            </div>
+                            <table id="passwords-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Title</th>
+                                        <th>Website</th>
+                                        <th>Password</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+
+                    fetchPasswords();
+
+                    const modal = document.createElement('div');
+                    modal.id = 'password-modal';
+                    modal.className = 'modal';
+                    modal.innerHTML = `
+                        <div class="modal-content">
+                            <span class="close" id="close-modal">&times;</span>
+                            <h2>Add New Password</h2>
+                            <form id="password-form">
+                                <input type="text" id="title" name="title" placeholder="Title" required>
+                                <input type="text" id="website" name="website" placeholder="Website" required>
+                                <input type="text" id="password" name="password" placeholder="Password" required>
+                                <div class="password-generator">
+                                    <label for="length">Length: <span id="length-value">16</span></label>
+                                    <input type="range" id="length" name="length" min="8" max="32" value="16">
+                                    
+                                    <div class="switch-container">
+                                        <label>Include Uppercase</label>
+                                        <label class="switch">
+                                            <input type="checkbox" id="uppercase" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="switch-container">
+                                        <label>Include Lowercase</label>
+                                        <label class="switch">
+                                            <input type="checkbox" id="lowercase" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="switch-container">
+                                        <label>Include Numbers</label>
+                                        <label class="switch">
+                                            <input type="checkbox" id="numbers" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="switch-container">
+                                        <label>Include Symbols</label>
+                                        <label class="switch">
+                                            <input type="checkbox" id="symbols" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+
+                                    <div class="button-row">
+                                        <button type="button" id="generate-password">Generate Password</button>
+                                        <button type="submit">Save</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+
+                    document.getElementById('add-password-btn').addEventListener('click', () => {
+                        modal.style.display = 'block';
+                    });
+
+                    document.getElementById('close-modal').addEventListener('click', () => {
+                        modal.style.display = 'none';
+                    });
+
+                    window.addEventListener('click', (event) => {
+                        if (event.target === modal) {
+                            modal.style.display = 'none';
+                        }
+                    });
+
+                    const lengthSlider = document.getElementById('length');
+                    const lengthValue = document.getElementById('length-value');
+                    const uppercaseCheckbox = document.getElementById('uppercase');
+                    const lowercaseCheckbox = document.getElementById('lowercase');
+                    const numbersCheckbox = document.getElementById('numbers');
+                    const symbolsCheckbox = document.getElementById('symbols');
+                    const generatePasswordButton = document.getElementById('generate-password');
+                    const passwordInput = document.getElementById('password');
+
+                    lengthSlider.addEventListener('input', () => {
+                        lengthValue.textContent = lengthSlider.value;
+                    });
+
+                    generatePasswordButton.addEventListener('click', () => {
+                        const length = parseInt(lengthSlider.value);
+                        const includeUppercase = uppercaseCheckbox.checked;
+                        const includeLowercase = lowercaseCheckbox.checked;
+                        const includeNumbers = numbersCheckbox.checked;
+                        const includeSymbols = symbolsCheckbox.checked;
+
+                        const password = generatePassword(length, includeUppercase, includeLowercase, includeNumbers, includeSymbols);
+                        passwordInput.value = password;
+                    });
+
+                    function generatePassword(length, includeUppercase, includeLowercase, includeNumbers, includeSymbols) {
+                        const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                        const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
+                        const numberChars = '0123456789';
+                        const symbolChars = '!@#$%^&*()_+{}:"<>?[];,./`~';
+
+                        let allowedChars = '';
+                        if (includeUppercase) allowedChars += uppercaseChars;
+                        if (includeLowercase) allowedChars += lowercaseChars;
+                        if (includeNumbers) allowedChars += numberChars;
+                        if (includeSymbols) allowedChars += symbolChars;
+
+                        let password = '';
+                        for (let i = 0; i < length; i++) {
+                            const randomIndex = Math.floor(Math.random() * allowedChars.length);
+                            password += allowedChars[randomIndex];
+                        }
+
+                        return password;
+                    }
+
+                    document.getElementById('password-form').addEventListener('submit', function (event) {
+                        event.preventDefault();
+
+                        const title = document.getElementById('title').value;
+                        const website = document.getElementById('website').value;
+                        const password = document.getElementById('password').value;
+
+                        const user = JSON.parse(localStorage.getItem('user'));
+                        if (!user || !user.id) {
+                            alert('User not found. Please log in.');
+                            return;
+                        }
+                        const uid = user.id;
+
+                        fetch('http://localhost:5000/save-password', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ uid, title, website, password }),
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    alert('Password saved successfully!');
+                                    modal.style.display = 'none';
+                                    document.getElementById('password-form').reset();
+                                    fetchPasswords();
+                                } else {
+                                    alert('Failed to save password: ' + data.message);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('An error occurred while saving the password.');
+                            });
+                    });
+                });
+
+                function fetchPasswords() {
+                    const user = JSON.parse(localStorage.getItem('user'));
+                    if (!user || !user.id) {
+                        alert('User not found. Please log in.');
+                        return;
+                    }
+
+                    fetch(`http://localhost:5000/get-passwords/${user.id}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                const passwordsTable = document.getElementById('passwords-table').getElementsByTagName('tbody')[0];
+                                passwordsTable.innerHTML = ''; 
+
+                                data.passwords.forEach(password => {
+                                    const row = passwordsTable.insertRow();
+                                    row.insertCell().textContent = password.id;
+                                    row.insertCell().textContent = password.title;
+                                    row.insertCell().textContent = password.website;
+
+                                    const passwordCell = row.insertCell();
+                                    const passwordSpan = document.createElement('span');
+                                    passwordSpan.textContent = '*'.repeat(password.password.length);
+                                    passwordCell.appendChild(passwordSpan);
+
+                                    const actionsCell = row.insertCell();
+                                    const popupButton = document.createElement('button');
+                                    popupButton.textContent = '⋮'; 
+                                    popupButton.style.backgroundColor = 'transparent';
+                                    popupButton.className = 'popup-button';
+
+                                    const popupMenu = document.createElement('div');
+                                    popupMenu.className = 'popup-menu';
+                                    popupMenu.innerHTML = `
+                                        <button class="show-btn">Show</button>
+                                        <button class="edit-btn">Edit</button>
+                                        <button class="delete-btn">Delete</button>
+                                    `;
+
+                                    popupButton.addEventListener('click', (e) => {
+                                        e.stopPropagation();
+                                        popupMenu.style.display = popupMenu.style.display === 'block' ? 'none' : 'block';
+                                    });
+
+                                    document.addEventListener('click', (event) => {
+                                        if (!popupButton.contains(event.target) && !popupMenu.contains(event.target)) {
+                                            popupMenu.style.display = 'none';
+                                        }
+                                    });
+
+                                    const showButton = popupMenu.querySelector('.show-btn');
+                                    showButton.addEventListener('click', () => {
+                                        if (passwordSpan.textContent === '*'.repeat(password.password.length)) {
+                                            passwordSpan.textContent = password.password;
+                                            showButton.textContent = 'Hide';
+                                        } else {
+                                            passwordSpan.textContent = '*'.repeat(password.password.length);
+                                            showButton.textContent = 'Show';
+                                        }
+                                        popupMenu.style.display = 'none'; 
+                                    });
+
+                                    const editButton = popupMenu.querySelector('.edit-btn');
+                                    editButton.addEventListener('click', () => {
+                                        openEditDialog(password);
+                                        popupMenu.style.display = 'none'; 
+                                    });
+
+                                    const deleteButton = popupMenu.querySelector('.delete-btn');
+                                    deleteButton.addEventListener('click', () => {
+                                        if (confirm('Are you sure you want to delete this password?')) {
+                                            fetch(`http://localhost:5000/delete-password/${password.id}`, {
+                                                method: 'DELETE',
+                                            })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                if (data.success) {
+                                                    alert('Password deleted successfully!');
+                                                    fetchPasswords();
+                                                } else {
+                                                    alert('Failed to delete password: ' + data.message);
+                                                }
+                                            })
+                                            .catch(error => {
+                                                console.error('Error deleting password:', error);
+                                                alert('An error occurred while deleting the password.');
+                                            });
+                                        }
+                                        popupMenu.style.display = 'none';
+                                    });
+
+                                    actionsCell.appendChild(popupButton);
+                                    actionsCell.appendChild(popupMenu);
+                                });
+                            } else {
+                                alert('Failed to fetch passwords: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching passwords:', error);
+                            alert('An error occurred while fetching passwords.');
+                        });
+                }
+                function openEditDialog(password) {
+                    const editModal = document.createElement('div');
+                    editModal.id = 'edit-password-modal';
+                    editModal.className = 'modal';
+                    editModal.innerHTML = `
+                        <div class="modal-content">
+                            <span class="close" id="close-edit-modal">&times;</span>
+                            <h2>Edit Password</h2>
+                            <form id="edit-password-form">
+                                <input type="text" id="edit-title" name="title" placeholder="Title" value="${password.title}" required>
+                                <input type="text" id="edit-website" name="website" placeholder="Website" value="${password.website}" required>
+                                <input type="text" id="edit-password" name="password" placeholder="Password" value="${password.password}" required>
+                                <div class="password-generator">
+                                    <label for="edit-length">Length: <span id="edit-length-value">16</span></label>
+                                    <input type="range" id="edit-length" name="length" min="8" max="32" value="16">
+                                    
+                                    <div class="switch-container">
+                                        <label>Include Uppercase</label>
+                                        <label class="switch">
+                                            <input type="checkbox" id="edit-uppercase" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="switch-container">
+                                        <label>Include Lowercase</label>
+                                        <label class="switch">
+                                            <input type="checkbox" id="edit-lowercase" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="switch-container">
+                                        <label>Include Numbers</label>
+                                        <label class="switch">
+                                            <input type="checkbox" id="edit-numbers" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="switch-container">
+                                        <label>Include Symbols</label>
+                                        <label class="switch">
+                                            <input type="checkbox" id="edit-symbols" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+
+                                    <div class="button-row">
+                                        <button type="button" id="edit-generate-password">Generate Password</button>
+                                        <button type="submit">Update</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    `;
+                    document.body.appendChild(editModal);
+
+                    editModal.style.display = 'block';
+
+                    document.getElementById('close-edit-modal').addEventListener('click', () => {
+                        editModal.style.display = 'none';
+                    });
+
+                    window.addEventListener('click', (event) => {
+                        if (event.target === editModal) {
+                            editModal.style.display = 'none';
+                        }
+                    });
+
+                    const editLengthSlider = document.getElementById('edit-length');
+                    const editLengthValue = document.getElementById('edit-length-value');
+                    const editUppercaseCheckbox = document.getElementById('edit-uppercase');
+                    const editLowercaseCheckbox = document.getElementById('edit-lowercase');
+                    const editNumbersCheckbox = document.getElementById('edit-numbers');
+                    const editSymbolsCheckbox = document.getElementById('edit-symbols');
+                    const editGeneratePasswordButton = document.getElementById('edit-generate-password');
+                    const editPasswordInput = document.getElementById('edit-password');
+
+                    editLengthSlider.addEventListener('input', () => {
+                        editLengthValue.textContent = editLengthSlider.value;
+                    });
+
+                    editGeneratePasswordButton.addEventListener('click', () => {
+                        const length = parseInt(editLengthSlider.value);
+                        const includeUppercase = editUppercaseCheckbox.checked;
+                        const includeLowercase = editLowercaseCheckbox.checked;
+                        const includeNumbers = editNumbersCheckbox.checked;
+                        const includeSymbols = editSymbolsCheckbox.checked;
+
+                        const password = generateEditPassword(length, includeUppercase, includeLowercase, includeNumbers, includeSymbols);
+                        editPasswordInput.value = password;
+                    });
+
+                    function generateEditPassword(length, includeUppercase, includeLowercase, includeNumbers, includeSymbols) {
+                        const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                        const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
+                        const numberChars = '0123456789';
+                        const symbolChars = '!@#$%^&*()_+{}:"<>?[];,./`~';
+
+                        let allowedChars = '';
+                        if (includeUppercase) allowedChars += uppercaseChars;
+                        if (includeLowercase) allowedChars += lowercaseChars;
+                        if (includeNumbers) allowedChars += numberChars;
+                        if (includeSymbols) allowedChars += symbolChars;
+
+                        let password = '';
+                        for (let i = 0; i < length; i++) {
+                            const randomIndex = Math.floor(Math.random() * allowedChars.length);
+                            password += allowedChars[randomIndex];
+                        }
+
+                        return password;
+                    }
+
+                    document.getElementById('edit-password-form').addEventListener('submit', function (event) {
+                        event.preventDefault();
+
+                        const updatedTitle = document.getElementById('edit-title').value;
+                        const updatedWebsite = document.getElementById('edit-website').value;
+                        const updatedPassword = document.getElementById('edit-password').value;
+
+                        const updateData = {
+                            id: password.id, 
+                            title: updatedTitle,
+                            website: updatedWebsite,
+                            password: updatedPassword
+                        };
+
+                        fetch('http://localhost:5000/update-password', {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(updateData),
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    alert('Password updated successfully!');
+                                    editModal.style.display = 'none'; 
+                                    fetchPasswords();
+                                } else {
+                                    alert('Failed to update password: ' + data.message);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error updating password:', error);
+                                alert('An error occurred while updating the password.');
+                            });
+                    });
+                }
+            
+            } else {
+                userContainer.innerHTML = `
+                    <section class="home">
+                        <h1>PASS-GEN</h1>
+                        <p>Seamless Password Management</p>
+                        <button class="auth-btn" id="login-btn">Login</button>
+                    </section>
+                `;
+
+                document.getElementById('login-btn').addEventListener('click', function () {
+                    window.location.href = 'auth.html';
+                });
+            }
+        });
+    </script>
 </body>
 </html>

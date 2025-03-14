@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style/style.css">
+    <title>Login and Register</title>
+</head>
+<body>
+    <main>
+        <div class="login-page">
+            <div class="form">
+                <form class="register-form">
+                    <input type="text" placeholder="username"/>
+                    <input type="text" placeholder="email address"/>
+                    <input type="password" placeholder="password"/>
+                    <span id="password-error" class="error-message"></span>
+                    <input type="password" placeholder="confirm password"/>
+                    <span id="confirm-password-error" class="error-message"></span>
+                    <button>Register</button>
+                    <p class="message">Already have an account? <a href="#">Log in</a></p>
+                </form>
+                <form class="login-form">
+                    <input type="text" placeholder="username or email"/>
+                    <input type="password" placeholder="password"/>
+                    <button>login</button>
+                    <p class="message">Not registered? <a href="#">Create an account</a></p>
+                </form>
+            </div>
+        </div> 
+    </main>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
