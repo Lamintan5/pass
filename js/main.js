@@ -28,7 +28,7 @@ $(document).ready(function() {
             data: JSON.stringify({ username, email, password }),
             success: function(response) {
                 alert(response.message);
-                storeUserData({ username, email }); 
+                storeUserData(response.user); 
             },
             error: function(xhr) {
                 alert(xhr.responseJSON.message);

@@ -50,7 +50,26 @@ app.post('/register', async (req, res) => {
                 return res.status(500).json({ message: 'Error registering user' });
             }
 
-            res.status(201).json({ message: 'User registered successfully' });
+            const getUserQuery = 'SELECT * FROM users WHERE id = ?';
+            db.query(getUserQuery, [result.insertId], (err, userResult) => {
+                if (err) {
+                    return res.status(500).json({ message: 'Error fetching user data' });
+                }
+
+                if (userResult.length === 0) {
+                    return res.status(404).json({ message: 'User not found after registration' });
+                }
+
+                const user = userResult[0];
+                res.status(201).json({ 
+                    message: 'User registered successfully', 
+                    user: { 
+                        id: user.id, 
+                        username: user.username, 
+                        email: user.email 
+                    } 
+                });
+            });
         });
     });
 });
