@@ -10,6 +10,9 @@
             color: #fff;
             display: flex;
             height: 100vh;
+            background: linear-gradient(135deg, #2e2e2e, #1a1a1a);
+            background-size: cover;
+            background-position: center;
         }
 
         .user-container {
@@ -43,11 +46,44 @@
         tr:hover {
             background-color: #444;
         }
+
         
     </style>
 </head>
 <body>
     <div id="user-container" class="user-container">
+        <section class="home">
+            <h1>Welcome to PassGen</h1>
+            <p>Your ultimate password management solution. Secure, simple, and seamless.</p>
+            <button class="auth-btn" id="login-btn">Get Started</button>
+        </section>
+
+        <section class="features">
+            <h2>Why Choose PassGen?</h2>
+            <div class="feature-cards">
+                <div class="card">
+                    <h3>Secure</h3>
+                    <p>Your passwords are encrypted and stored safely.</p>
+                </div>
+                <div class="card">
+                    <h3>Easy to Use</h3>
+                    <p>Simple and intuitive interface for managing passwords.</p>
+                </div>
+                <div class="card">
+                    <h3>Accessible</h3>
+                    <p>Access your passwords anytime, anywhere.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="home-footer">
+            <p>© 2025 PassGen. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#">Facebook</a>
+                <a href="#">Twitter</a>
+                <a href="#">LinkedIn</a>
+            </div>
+        </footer>
     </div>
 
     <script>
@@ -346,7 +382,7 @@
                         .then(data => {
                             if (data.success) {
                                 const passwordsTable = document.getElementById('passwords-table').getElementsByTagName('tbody')[0];
-                                passwordsTable.innerHTML = ''; 
+                                passwordsTable.innerHTML = '';
 
                                 data.passwords.forEach(password => {
                                     const row = passwordsTable.insertRow();
@@ -361,7 +397,7 @@
 
                                     const actionsCell = row.insertCell();
                                     const popupButton = document.createElement('button');
-                                    popupButton.textContent = '⋮'; 
+                                    popupButton.textContent = '⋮';
                                     popupButton.style.backgroundColor = 'transparent';
                                     popupButton.className = 'popup-button';
 
@@ -393,13 +429,13 @@
                                             passwordSpan.textContent = '*'.repeat(password.password.length);
                                             showButton.textContent = 'Show';
                                         }
-                                        popupMenu.style.display = 'none'; 
+                                        popupMenu.style.display = 'none';
                                     });
 
                                     const editButton = popupMenu.querySelector('.edit-btn');
                                     editButton.addEventListener('click', () => {
                                         openEditDialog(password);
-                                        popupMenu.style.display = 'none'; 
+                                        popupMenu.style.display = 'none';
                                     });
 
                                     const deleteButton = popupMenu.querySelector('.delete-btn');
@@ -557,7 +593,7 @@
                         const updatedPassword = document.getElementById('edit-password').value;
 
                         const updateData = {
-                            id: password.id, 
+                            id: password.id,
                             title: updatedTitle,
                             website: updatedWebsite,
                             password: updatedPassword
@@ -574,7 +610,7 @@
                             .then(data => {
                                 if (data.success) {
                                     alert('Password updated successfully!');
-                                    editModal.style.display = 'none'; 
+                                    editModal.style.display = 'none';
                                     fetchPasswords();
                                 } else {
                                     alert('Failed to update password: ' + data.message);
@@ -586,14 +622,126 @@
                             });
                     });
                 }
-            
             } else {
                 userContainer.innerHTML = `
                     <section class="home">
-                        <h1>PASS-GEN</h1>
-                        <p>Seamless Password Management</p>
-                        <button class="auth-btn" id="login-btn">Login</button>
+                        <h1>Welcome to PassGen</h1>
+                        <p>Your ultimate password management solution. Secure, simple, and seamless.</p>
+                        <button class="auth-btn" id="login-btn">Get Started</button>
                     </section>
+
+                    <section class="features">
+                        <h2>Why Choose PassGen?</h2>
+                        <div class="feature-cards">
+                            <div class="card">
+                                <h3>Secure</h3>
+                                <p>Your passwords are encrypted and stored safely.</p>
+                            </div>
+                            <div class="card">
+                                <h3>Easy to Use</h3>
+                                <p>Simple and intuitive interface for managing passwords.</p>
+                            </div>
+                            <div class="card">
+                                <h3>Accessible</h3>
+                                <p>Access your passwords anytime, anywhere.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="how-it-works">
+                        <h2>How It Works</h2>
+                        <div class="steps">
+                            <div class="step">
+                                <h3>1. Sign Up</h3>
+                                <p>Create an account to start managing your passwords securely.</p>
+                            </div>
+                            <div class="step">
+                                <h3>2. Add Passwords</h3>
+                                <p>Store your passwords for websites, apps, and services in one place.</p>
+                            </div>
+                            <div class="step">
+                                <h3>3. Access Anywhere</h3>
+                                <p>Access your passwords anytime, anywhere, with just one login.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="testimonials">
+                        <h2>What Our Users Say</h2>
+                        <div class="testimonial-cards">
+                            <div class="testimonial">
+                                <p>"PassGen has made managing my passwords so much easier. Highly recommended!"</p>
+                                <p class="author">- John Doe</p>
+                            </div>
+                            <div class="testimonial">
+                                <p>"I love the security features. My passwords have never been safer."</p>
+                                <p class="author">- Jane Smith</p>
+                            </div>
+                            <div class="testimonial">
+                                <p>"The interface is simple and intuitive. Great job, PassGen!"</p>
+                                <p class="author">- Alex Johnson</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="pricing">
+                        <h2>Pricing</h2>
+                        <div class="pricing-cards">
+                            <div class="pricing-card">
+                                <h3>Free</h3>
+                                <p class="price">$0/month</p>
+                                <ul>
+                                    <li>Store up to 50 passwords</li>
+                                    <li>Basic security features</li>
+                                    <li>Access on one device</li>
+                                </ul>
+                                <button class="pricing-btn">Get Started</button>
+                            </div>
+                            <div class="pricing-card">
+                                <h3>Pro</h3>
+                                <p class="price">$5/month</p>
+                                <ul>
+                                    <li>Unlimited password storage</li>
+                                    <li>Advanced security features</li>
+                                    <li>Access on multiple devices</li>
+                                </ul>
+                                <button class="pricing-btn">Upgrade Now</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="faq">
+                        <h2>Frequently Asked Questions</h2>
+                        <div class="faq-list">
+                            <div class="faq-item">
+                                <h3>Is my data secure?</h3>
+                                <p>Yes, all your data is encrypted and stored securely using advanced encryption algorithms.</p>
+                            </div>
+                            <div class="faq-item">
+                                <h3>Can I access my passwords offline?</h3>
+                                <p>No, you need an internet connection to access your passwords.</p>
+                            </div>
+                            <div class="faq-item">
+                                <h3>How do I reset my password?</h3>
+                                <p>You can reset your password by clicking on the "Forgot Password" link on the login page.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="cta">
+                        <h2>Ready to Get Started?</h2>
+                        <p>Join thousands of users who trust PassGen to manage their passwords securely.</p>
+                        <button class="cta-btn">Sign Up Now</button>
+                    </section>
+
+                    <footer class="home-footer">
+                        <p>© 2023 PassGen. All rights reserved.</p>
+                        <div class="social-links">
+                            <a href="#">Facebook</a>
+                            <a href="#">Twitter</a>
+                            <a href="#">LinkedIn</a>
+                        </div>
+                    </footer>
                 `;
 
                 document.getElementById('login-btn').addEventListener('click', function () {

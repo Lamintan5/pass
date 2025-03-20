@@ -122,8 +122,7 @@ body {
   margin-top: -10px;
   margin-bottom: 10px;
 }
-
-.home{
+.home {
   height: 100vh;
   text-align: center;
   margin-top: 100px;
@@ -133,26 +132,115 @@ body {
   justify-content: center;
 }
 
-.home h1{
+.home h1 {
   margin: 0;
   padding: 0;
   font-size: 50px;
   color: #fff;
   font-weight: bold;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  animation: fadeIn 1s ease-in-out;
 }
 
-.home p{
+.home p {
   margin: 0;
   padding: 0;
   color: #fff;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  animation: fadeIn 1.5s ease-in-out;
 }
-.home .login{
-  margin: 0;
-  padding: 0;
+
+.auth-btn {
+  padding: 15px 70px;
+  margin: 10px;
+  border-radius: 10px;
+  background-color: transparent;
   color: #fff;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  animation: fadeIn 2s ease-in-out;
+}
+
+.home-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.social-links a {
+  color: #fff;
+  margin: 0 10px;
+  text-decoration: none;
+}
+
+.social-links a:hover {
+  color: #007AFF;
+}
+
+.features {
+  padding: 40px 20px;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.features h2 {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.feature-cards {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.card {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 10px;
+  width: 30%;
+  margin: 10px;
+}
+
+.card h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.card p {
+  font-size: 14px;
+  color: #adadad;
+}
+
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+      transform: translateY(20px);
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .feature-cards {
+      flex-direction: column;
+  }
+
+  .card {
+      width: 100%;
+      margin: 10px 0;
+  }
+
+  .home h1 {
+      font-size: 36px;
+  }
+
+  .home p {
+      font-size: 16px;
+  }
 }
 
 .auth-btn{
@@ -571,4 +659,202 @@ input:checked + .slider:before {
   border-radius: 5px;
   box-sizing: border-box;
   font-size: 14px;
+}
+
+.how-it-works {
+  padding: 40px 20px;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.how-it-works h2 {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.steps {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.step {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 10px;
+  width: 30%;
+  margin: 10px;
+}
+
+.step h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.step p {
+  font-size: 14px;
+  color: #adadad;
+}
+
+.testimonials {
+  padding: 40px 20px;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.testimonials h2 {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.testimonial-cards {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.testimonial {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 10px;
+  width: 30%;
+  margin: 10px;
+}
+
+.testimonial p {
+  font-size: 14px;
+  color: #adadad;
+  margin-bottom: 10px;
+}
+
+.testimonial .author {
+  font-weight: bold;
+  color: #fff;
+}
+
+.pricing {
+  padding: 40px 20px;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.pricing h2 {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.pricing-cards {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.pricing-card {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 10px;
+  width: 30%;
+  margin: 10px;
+}
+
+.pricing-card h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.pricing-card .price {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.pricing-card ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.pricing-card ul li {
+  font-size: 14px;
+  color: #adadad;
+  margin-bottom: 5px;
+}
+
+.pricing-card .pricing-btn {
+  background-color: #007AFF;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.pricing-card .pricing-btn:hover {
+  background-color: #005bb5;
+}
+
+.faq {
+  padding: 40px 20px;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.faq h2 {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.faq-item {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  margin: 10px;
+  text-align: left;
+}
+
+.faq-item h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.faq-item p {
+  font-size: 14px;
+  color: #adadad;
+}
+
+.cta {
+  padding: 40px 20px;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.cta h2 {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.cta p {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.cta .cta-btn {
+  background-color: #007AFF;
+  color: #fff;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.cta .cta-btn:hover {
+  background-color: #005bb5;
 }
